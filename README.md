@@ -1,8 +1,6 @@
-# Omarchup (omarchyup)
+# Omarchup
 
-Personal on-demand setup and synchronization layer for **[Omarchy OS](https://omarchy.org/)** managing personal packages (`1password`, `vlc`, and `vlc-plugin-upnp`), dotfiles (`editorconfig`), and system configuration enhancements (vim-style tmux navigation & VLC UPnP service discovery).
-
-Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, prompt, audio, Bluetooth, and core system utilities) is completely managed and comprehended by Omarchy OS.
+Personal on-demand setup and synchronization layer for **[Omarchy OS](https://omarchy.org/)** managing personal packages, dotfiles, and system configuration enhancements.
 
 ---
 
@@ -22,27 +20,6 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 4. **VLC UPnP Service Discovery ([lib/vlc.sh](lib/vlc.sh))**:
    - Enables UPnP service discovery in `~/.config/vlc/vlcrc`.
    - Checks and verifies UFW firewall rules for UPnP/SSDP traffic (UDP port 1900 / local subnet).
-
----
-
-## Project Structure
-
-```
-~/Work/omarchup/
-├── bin/
-│   └── omarchup            # Main CLI runner
-├── config/
-│   ├── packages.conf       # 1password, vlc, vlc-plugin-upnp
-│   └── dotfiles.conf       # emoriarty/dotfiles repo & module definitions (editorconfig)
-├── lib/
-│   ├── ui.sh               # Styling, banners, and logging
-│   ├── packages.sh         # Package synchronization module
-│   ├── dotfiles.sh         # GNU Stow manager
-│   ├── tmux.sh             # Omarchy tmux configuration enhancer
-│   └── vlc.sh              # VLC UPnP configuration & firewall verifier
-├── install.sh              # Links 'omarchup' & 'omarchyup' into ~/.local/bin
-└── README.md
-```
 
 ---
 
