@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Omarchup UI & Logging Utilities
+# Omarchup Terminal UI & Formatting Helpers
 # ==============================================================================
 
 if [[ -t 1 ]]; then
@@ -26,6 +26,11 @@ else
 fi
 
 print_logo() {
+  # Do not print logo in quiet mode or non-interactive environments
+  if [[ "${OMARCHUP_QUIET:-0}" == "1" ]] || [[ ! -t 1 ]]; then
+    return 0
+  fi
+
   cat << "LOGO_EOF"
   ____  __  __    _    ____   ____ _   _ _   _ ____  
  / __ \|  \/  |  / \  |  _ \ / ___| | | | | | |  _ \ 

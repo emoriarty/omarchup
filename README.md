@@ -27,7 +27,7 @@ Everything else (Hyprland, status bar, notifications, terminal, prompt, audio, B
 │   ├── packages.conf       # 1password and vlc
 │   └── dotfiles.conf       # emoriarty/dotfiles repo & module definitions
 ├── lib/
-│   ├── colors.sh           # Styling, banners, and logging
+│   ├── ui.sh           # Styling, banners, and logging
 │   ├── packages.sh         # Package synchronization module
 │   ├── dotfiles.sh         # GNU Stow manager with Omarchy safety guards
 │   └── hook.sh             # Omarchy hook manager (post-update.d)

@@ -16,7 +16,7 @@ fi
 
 if [[ -x "$OMARCHUP_BIN" ]]; then
   echo -e "\033[34m==>\033[0m \033[1mRunning Omarchup Post-Update Sync\033[0m"
-  "$OMARCHUP_BIN" sync || {
+  "$OMARCHUP_BIN" sync --quiet || {
     echo -e "\033[33m[omarchup hook] Notice: Omarchup completed with warnings.\033[0m" >&2
   }
 fi
