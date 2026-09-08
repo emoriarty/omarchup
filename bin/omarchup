@@ -30,8 +30,6 @@ source "${SCRIPT_DIR}/lib/dotfiles.sh"
 source "${SCRIPT_DIR}/lib/tmux.sh"
 # shellcheck source=../lib/vlc.sh
 source "${SCRIPT_DIR}/lib/vlc.sh"
-# shellcheck source=../lib/hook.sh
-source "${SCRIPT_DIR}/lib/hook.sh"
 
 show_help() {
   print_logo
@@ -42,17 +40,15 @@ show_help() {
   echo -e "  ${CLR_GREEN}packages${CLR_RESET} [action]  Manage packages (actions: sync, status)"
   echo -e "  ${CLR_GREEN}dotfiles${CLR_RESET} [action]  Manage dotfiles (actions: sync, status, --force)"
   echo -e "  ${CLR_GREEN}tmux${CLR_RESET} [action]      Manage Omarchy tmux configuration (actions: sync, status)"
-  echo -e "  ${CLR_GREEN}vlc${CLR_RESET} [action]       Manage VLC UPnP configuration & firewall status"
-  echo -e "  ${CLR_GREEN}hook${CLR_RESET} [action]      Manage Omarchy update hook (actions: install, remove, status)"
+  echo -e "  ${CLR_GREEN}vlc${CLR_RESET} [action]       Manage VLC UPnP configuration & status"
   echo -e "  ${CLR_GREEN}status${CLR_RESET}             Display overall system status"
-  echo -e "  ${CLR_GREEN}update${CLR_RESET}             Run full system 'omarchy update' followed by omarchup sync"
   echo -e "  ${CLR_GREEN}help${CLR_RESET}               Show this help message\n"
   echo -e "${CLR_BOLD}Global Options:${CLR_RESET}"
   echo -e "  ${CLR_CYAN}-q, --quiet${CLR_RESET}        Suppress logo and decorative banners\n"
   echo -e "${CLR_BOLD}Examples:${CLR_RESET}"
   echo -e "  omarchup                   # Runs complete sync"
+  echo -e "  omarchup status            # Inspect current status of all managed parts"
   echo -e "  omarchup vlc sync          # Configures UPnP discovery for VLC"
-  echo -e "  omarchup hook install      # Register omarchup to run during 'omarchy update'"
 }
 
 cmd_sync() {
@@ -71,7 +67,6 @@ cmd_status() {
   status_dotfiles
   status_tmux
   status_vlc
-  status_hook
 }
 
 cmd_packages() {
@@ -154,39 +149,6 @@ cmd_vlc() {
   esac
 }
 
-cmd_hook() {
-  local sub="${1:-status}"
-  case "$sub" in
-    install)
-      install_hook
-      ;;
-    remove)
-      remove_hook
-      ;;
-    status)
-      status_hook
-      ;;
-    *)
-      log_error "Unknown hook action: $sub"
-      echo "Valid actions: install, remove, status"
-      exit 1
-      ;;
-  esac
-}
-
-cmd_update() {
-  print_logo
-  log_header "Running System Update via Omarchy"
-  omarchy update
-  echo
-  log_header "Running Post-Update Omarchup Layer"
-  sync_packages
-  sync_dotfiles false
-  sync_tmux
-  sync_vlc
-  log_success "System and Omarchup update finished!"
-}
-
 main() {
   local filtered_args=()
   for arg in "$@"; do
@@ -219,14 +181,8 @@ main() {
     vlc)
       cmd_vlc "${rest_args[@]}"
       ;;
-    hook)
-      cmd_hook "${rest_args[@]}"
-      ;;
     status)
       cmd_status
-      ;;
-    update|up)
-      cmd_update "${rest_args[@]}"
       ;;
     help|--help|-h)
       show_help

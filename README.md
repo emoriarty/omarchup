@@ -1,6 +1,6 @@
 # Omarchup (omarchyup)
 
-Personal add-on layer for **[Omarchy OS](https://omarchy.org/)** managing personal packages (`1password`, `vlc`, and `vlc-plugin-upnp`), dotfiles (`editorconfig`), and system configuration enhancements (vim-style tmux navigation & VLC UPnP service discovery).
+Personal on-demand setup and synchronization layer for **[Omarchy OS](https://omarchy.org/)** managing personal packages (`1password`, `vlc`, and `vlc-plugin-upnp`), dotfiles (`editorconfig`), and system configuration enhancements (vim-style tmux navigation & VLC UPnP service discovery).
 
 Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, prompt, audio, Bluetooth, and core system utilities) is completely managed and comprehended by Omarchy OS.
 
@@ -39,10 +39,7 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 │   ├── packages.sh         # Package synchronization module
 │   ├── dotfiles.sh         # GNU Stow manager
 │   ├── tmux.sh             # Omarchy tmux configuration enhancer
-│   ├── vlc.sh              # VLC UPnP configuration & firewall verifier
-│   └── hook.sh             # Omarchy hook manager (post-update.d)
-├── hooks/
-│   └── 50-omarchup.hook    # Hook for ~/.config/omarchy/hooks/post-update.d/
+│   └── vlc.sh              # VLC UPnP configuration & firewall verifier
 ├── install.sh              # Links 'omarchup' & 'omarchyup' into ~/.local/bin
 └── README.md
 ```
@@ -51,20 +48,21 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 
 ## Quick Start
 
-### 1. Check Current Status
+### 1. Install CLI Symlinks
+Run once to create `~/.local/bin/{omarchup, omarchyup}`:
+```bash
+cd ~/Work/omarchup
+./install.sh
+```
+
+### 2. Check Current Status
 ```bash
 omarchup status
 ```
 
-### 2. Synchronize (Packages, Dotfiles, Tmux, and VLC)
+### 3. Synchronize All
 ```bash
 omarchup sync
-```
-
-### 3. (Optional) Register with `omarchy update`
-To have your personal packages, dotfiles, tmux, and VLC configurations re-verified after every `omarchy update`:
-```bash
-omarchup hook install
 ```
 
 ---
@@ -78,6 +76,5 @@ omarchup hook install
 | `omarchup dotfiles [sync\|status]` | Clone/pull dotfiles and stow editorconfig |
 | `omarchup tmux [sync\|status]` | Check status or apply vim navigation to Omarchy tmux |
 | `omarchup vlc [sync\|status]` | Check status or configure UPnP discovery for VLC |
-| `omarchup hook [install\|remove\|status]` | Manage Omarchy post-update hook integration |
-| `omarchup status` | Display overview of packages, dotfiles, tmux, VLC, and hook |
-| `omarchup update` | Runs `omarchy update`, followed by `omarchup sync` |
+| `omarchup status` | Display overview of packages, dotfiles, tmux, and VLC |
+| `omarchup help` | Show help and usage instructions |

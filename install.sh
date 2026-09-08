@@ -21,6 +21,3 @@ echo -e "  - \033[1m${BIN_DIR}/omarchup\033[0m"
 echo -e "  - \033[1m${BIN_DIR}/omarchyup\033[0m"
 echo
 echo -e "You can now run \033[1momarchup\033[0m or \033[1momarchyup\033[0m from any terminal."
-echo
-echo -e "To integrate with Omarchy's update lifecycle, run:"
-echo -e "  \033[36momarchup hook install\033[0m"
