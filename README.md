@@ -13,14 +13,8 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
    - `vlc`
    - `vlc-plugin-upnp`
 2. **Personal Dotfiles ([config/dotfiles.conf](config/dotfiles.conf))**:
-   - Safe dotfiles modules from `emoriarty/dotfiles`:
+   - Modules from `emoriarty/dotfiles`:
      - `editorconfig` (`~/.editorconfig`)
-   - **Excluded / Conflicting Modules**:
-     - `tmux` (managed via `omarchup tmux` directly on Omarchy's config)
-     - `nvim` (Omarchy provides its own tuned LazyVim setup in `~/.config/nvim/`)
-     - `kitty` / `alacritty` (Omarchy manages terminal themes dynamically)
-     - `starship` (Omarchy provides its own prompt defaults)
-     - `hyprland` / `waybar` / `wofi` / `bash_arch` (managed by Omarchy core)
 3. **Omarchy Configuration Tuning ([lib/tmux.sh](lib/tmux.sh))**:
    - Idempotently applies vim-style pane navigation (`PREFIX + h/j/k/l`) to `~/.config/tmux/tmux.conf`.
    - Remaps vertical split to `PREFIX + s` and kill window to `PREFIX + X`.
@@ -40,7 +34,7 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 ├── lib/
 │   ├── ui.sh               # Styling, banners, and logging
 │   ├── packages.sh         # Package synchronization module
-│   ├── dotfiles.sh         # GNU Stow manager with Omarchy safety guards
+│   ├── dotfiles.sh         # GNU Stow manager
 │   ├── tmux.sh             # Omarchy tmux configuration enhancer
 │   └── hook.sh             # Omarchy hook manager (post-update.d)
 ├── hooks/

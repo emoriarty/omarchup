@@ -65,16 +65,17 @@ stow_module() {
 
 sync_dotfiles() {
   local force="${1:-false}"
+  local target_modules=("${MODULES[@]:-${SAFE_MODULES[@]}}")
+
   log_header "Synchronizing Dotfiles"
 
   ensure_dotfiles_prereqs
   sync_dotfiles_repo
 
-  log_info "Stowing safe modules on Omarchy OS..."
   local success_count=0
   local fail_count=0
 
-  for mod in "${SAFE_MODULES[@]}"; do
+  for mod in "${target_modules[@]}"; do
     if stow_module "$mod" "$force"; then
       ((success_count += 1))
     else
@@ -82,23 +83,15 @@ sync_dotfiles() {
     fi
   done
 
-  echo
-  log_success "Stowed ${success_count} modules successfully."
   if ((fail_count > 0)); then
     log_warn "${fail_count} modules had conflicts and were preserved safely."
-  fi
-
-  if ((${#DISABLED_MODULES[@]} > 0)); then
-    echo
-    log_info "Omarchy Core Preserved:"
-    echo -e "  ${CLR_DIM}The following modules were skipped to avoid breaking Omarchy shell & desktop:${CLR_RESET}"
-    for dis in "${DISABLED_MODULES[@]}"; do
-      echo -e "  ${CLR_DIM}- ${dis}${CLR_RESET}"
-    done
+  else
+    log_success "All dotfile modules stowed successfully."
   fi
 }
 
 status_dotfiles() {
+  local target_modules=("${MODULES[@]:-${SAFE_MODULES[@]}}")
   log_header "Dotfiles Status"
 
   if [[ ! -d "$DOTFILES_DIR" ]]; then
@@ -108,17 +101,12 @@ status_dotfiles() {
 
   echo -e "  ${CLR_GREEN}✔${CLR_RESET} Repository: ${DOTFILES_DIR} ${CLR_DIM}($(git -C "$DOTFILES_DIR" rev-parse --short HEAD 2>/dev/null || echo "unknown"))${CLR_RESET}"
 
-  echo -e "\n${CLR_BOLD}Safe Modules:${CLR_RESET}"
-  for mod in "${SAFE_MODULES[@]}"; do
+  echo -e "\n${CLR_BOLD}Configured Modules:${CLR_RESET}"
+  for mod in "${target_modules[@]}"; do
     if [[ -d "${DOTFILES_DIR}/${mod}" ]]; then
       echo -e "  ${CLR_GREEN}✔${CLR_RESET} ${mod} ${CLR_DIM}(ready)${CLR_RESET}"
     else
       echo -e "  ${CLR_YELLOW}⚠${CLR_RESET} ${mod} ${CLR_DIM}(module directory missing in repo)${CLR_RESET}"
     fi
-  done
-
-  echo -e "\n${CLR_BOLD}Omarchy Core (Excluded from Stow):${CLR_RESET}"
-  for dis in "${DISABLED_MODULES[@]}"; do
-    echo -e "  ${CLR_BLUE}•${CLR_RESET} ${dis} ${CLR_DIM}(handled natively by Omarchy)${CLR_RESET}"
   done
 }
