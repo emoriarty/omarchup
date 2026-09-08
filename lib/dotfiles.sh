@@ -76,9 +76,9 @@ sync_dotfiles() {
 
   for mod in "${SAFE_MODULES[@]}"; do
     if stow_module "$mod" "$force"; then
-      ((success_count++))
+      ((success_count += 1))
     else
-      ((fail_count++))
+      ((fail_count += 1))
     fi
   done
 
