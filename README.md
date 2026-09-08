@@ -1,6 +1,6 @@
 # Omarchup (omarchyup)
 
-Personal add-on layer for **[Omarchy OS](https://omarchy.org/)** managing solely personal dotfiles (`tmux`, `editorconfig`) and apps (`1password`, `vlc`).
+Personal add-on layer for **[Omarchy OS](https://omarchy.org/)** managing solely personal dotfiles (`tmux`, `editorconfig`) and apps (`1password`, `vlc`, and `vlc-plugin-upnp`).
 
 Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, prompt, audio, Bluetooth, and core system utilities) is completely managed and comprehended by Omarchy OS.
 
@@ -11,6 +11,7 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 1. **Personal Applications ([config/packages.conf](config/packages.conf))**:
    - `1password`
    - `vlc`
+   - `vlc-plugin-upnp`
 2. **Personal Dotfiles ([config/dotfiles.conf](config/dotfiles.conf))**:
    - Safe dotfiles modules from `emoriarty/dotfiles`:
      - `tmux` (`~/.tmux.conf`)
@@ -30,7 +31,7 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 ├── bin/
 │   └── omarchup            # Main CLI runner
 ├── config/
-│   ├── packages.conf       # 1password and vlc
+│   ├── packages.conf       # 1password, vlc, vlc-plugin-upnp
 │   └── dotfiles.conf       # emoriarty/dotfiles repo & module definitions (tmux, editorconfig)
 ├── lib/
 │   ├── ui.sh               # Styling, banners, and logging
@@ -69,8 +70,8 @@ omarchup hook install
 
 | Command | Description |
 | :--- | :--- |
-| `omarchup` or `omarchup sync` | Synchronize 1password, vlc, tmux, and editorconfig |
-| `omarchup packages [sync\|status]` | Check status or install 1password and vlc |
+| `omarchup` or `omarchup sync` | Synchronize 1password, vlc, vlc-plugin-upnp, tmux, and editorconfig |
+| `omarchup packages [sync\|status]` | Check status or install 1password, vlc, and vlc-plugin-upnp |
 | `omarchup dotfiles [sync\|status]` | Clone/pull dotfiles and stow tmux and editorconfig |
 | `omarchup hook [install\|remove\|status]` | Manage Omarchy post-update hook integration |
 | `omarchup status` | Display overview of packages, dotfiles, and hook |
