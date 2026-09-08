@@ -1,19 +1,25 @@
 # Omarchup (omarchyup)
 
-Personal add-on layer for **[Omarchy OS](https://omarchy.org/)** managing solely personal dotfiles and apps (`1password` and `vlc`).
+Personal add-on layer for **[Omarchy OS](https://omarchy.org/)** managing solely personal dotfiles (`tmux`, `editorconfig`) and apps (`1password`, `vlc`).
 
-Everything else (Hyprland, status bar, notifications, terminal, prompt, audio, Bluetooth, and core system utilities) is completely managed and comprehended by Omarchy OS.
+Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, prompt, audio, Bluetooth, and core system utilities) is completely managed and comprehended by Omarchy OS.
 
 ---
 
 ## What Omarchup Manages
 
-1. **Personal Applications**:
+1. **Personal Applications ([config/packages.conf](config/packages.conf))**:
    - `1password`
    - `vlc`
-2. **Personal Dotfiles**:
-   - Safe dotfiles modules from `emoriarty/dotfiles` (`nvim`, `kitty`, `alacritty`, `starship`, `tmux`, `backgrounds`, `editorconfig`).
-   - Automatically skips desktop shell and window manager components already owned by Omarchy (`hyprland`, `waybar`, `wofi`, `bash_arch`).
+2. **Personal Dotfiles ([config/dotfiles.conf](config/dotfiles.conf))**:
+   - Safe dotfiles modules from `emoriarty/dotfiles`:
+     - `tmux` (`~/.tmux.conf`)
+     - `editorconfig` (`~/.editorconfig`)
+   - **Excluded / Conflicting Modules**:
+     - `nvim` (Omarchy provides its own tuned LazyVim setup in `~/.config/nvim/`)
+     - `kitty` / `alacritty` (Omarchy manages terminal themes dynamically)
+     - `starship` (Omarchy provides its own prompt defaults)
+     - `hyprland` / `waybar` / `wofi` / `bash_arch` (managed by Omarchy core)
 
 ---
 
@@ -25,9 +31,9 @@ Everything else (Hyprland, status bar, notifications, terminal, prompt, audio, B
 │   └── omarchup            # Main CLI runner
 ├── config/
 │   ├── packages.conf       # 1password and vlc
-│   └── dotfiles.conf       # emoriarty/dotfiles repo & module definitions
+│   └── dotfiles.conf       # emoriarty/dotfiles repo & module definitions (tmux, editorconfig)
 ├── lib/
-│   ├── ui.sh           # Styling, banners, and logging
+│   ├── ui.sh               # Styling, banners, and logging
 │   ├── packages.sh         # Package synchronization module
 │   ├── dotfiles.sh         # GNU Stow manager with Omarchy safety guards
 │   └── hook.sh             # Omarchy hook manager (post-update.d)
@@ -63,9 +69,9 @@ omarchup hook install
 
 | Command | Description |
 | :--- | :--- |
-| `omarchup` or `omarchup sync` | Synchronize 1password, vlc, and safe dotfiles |
+| `omarchup` or `omarchup sync` | Synchronize 1password, vlc, tmux, and editorconfig |
 | `omarchup packages [sync\|status]` | Check status or install 1password and vlc |
-| `omarchup dotfiles [sync\|status]` | Clone/pull dotfiles and stow safe modules |
+| `omarchup dotfiles [sync\|status]` | Clone/pull dotfiles and stow tmux and editorconfig |
 | `omarchup hook [install\|remove\|status]` | Manage Omarchy post-update hook integration |
 | `omarchup status` | Display overview of packages, dotfiles, and hook |
 | `omarchup update` | Runs `omarchy update`, followed by `omarchup sync` |
