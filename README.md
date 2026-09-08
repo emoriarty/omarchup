@@ -1,6 +1,6 @@
 # Omarchup (omarchyup)
 
-Personal add-on layer for **[Omarchy OS](https://omarchy.org/)** managing personal packages (`1password`, `vlc`, and `vlc-plugin-upnp`), dotfiles (`editorconfig`), and Omarchy configuration enhancements (such as vim-style tmux navigation).
+Personal add-on layer for **[Omarchy OS](https://omarchy.org/)** managing personal packages (`1password`, `vlc`, and `vlc-plugin-upnp`), dotfiles (`editorconfig`), and system configuration enhancements (vim-style tmux navigation & VLC UPnP service discovery).
 
 Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, prompt, audio, Bluetooth, and core system utilities) is completely managed and comprehended by Omarchy OS.
 
@@ -15,10 +15,13 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 2. **Personal Dotfiles ([config/dotfiles.conf](config/dotfiles.conf))**:
    - Modules from `emoriarty/dotfiles`:
      - `editorconfig` (`~/.editorconfig`)
-3. **Omarchy Configuration Tuning ([lib/tmux.sh](lib/tmux.sh))**:
+3. **Omarchy Tmux Tuning ([lib/tmux.sh](lib/tmux.sh))**:
    - Idempotently applies vim-style pane navigation (`PREFIX + h/j/k/l`) to `~/.config/tmux/tmux.conf`.
    - Remaps vertical split to `PREFIX + s` and kill window to `PREFIX + X`.
    - Preserves all Omarchy system theming, mouse support, and terminal features.
+4. **VLC UPnP Service Discovery ([lib/vlc.sh](lib/vlc.sh))**:
+   - Enables UPnP service discovery in `~/.config/vlc/vlcrc`.
+   - Checks and verifies UFW firewall rules for UPnP/SSDP traffic (UDP port 1900 / local subnet).
 
 ---
 
@@ -36,6 +39,7 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 │   ├── packages.sh         # Package synchronization module
 │   ├── dotfiles.sh         # GNU Stow manager
 │   ├── tmux.sh             # Omarchy tmux configuration enhancer
+│   ├── vlc.sh              # VLC UPnP configuration & firewall verifier
 │   └── hook.sh             # Omarchy hook manager (post-update.d)
 ├── hooks/
 │   └── 50-omarchup.hook    # Hook for ~/.config/omarchy/hooks/post-update.d/
@@ -52,13 +56,13 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 omarchup status
 ```
 
-### 2. Synchronize (Packages, Dotfiles, and Tmux)
+### 2. Synchronize (Packages, Dotfiles, Tmux, and VLC)
 ```bash
 omarchup sync
 ```
 
 ### 3. (Optional) Register with `omarchy update`
-To have your personal packages, dotfiles, and tmux configurations re-verified after every `omarchy update`:
+To have your personal packages, dotfiles, tmux, and VLC configurations re-verified after every `omarchy update`:
 ```bash
 omarchup hook install
 ```
@@ -69,10 +73,11 @@ omarchup hook install
 
 | Command | Description |
 | :--- | :--- |
-| `omarchup` or `omarchup sync` | Synchronize packages, editorconfig, and tmux config |
+| `omarchup` or `omarchup sync` | Synchronize packages, editorconfig, tmux, and VLC |
 | `omarchup packages [sync\|status]` | Check status or install 1password, vlc, and vlc-plugin-upnp |
 | `omarchup dotfiles [sync\|status]` | Clone/pull dotfiles and stow editorconfig |
 | `omarchup tmux [sync\|status]` | Check status or apply vim navigation to Omarchy tmux |
+| `omarchup vlc [sync\|status]` | Check status or configure UPnP discovery for VLC |
 | `omarchup hook [install\|remove\|status]` | Manage Omarchy post-update hook integration |
-| `omarchup status` | Display overview of packages, dotfiles, tmux, and hook |
+| `omarchup status` | Display overview of packages, dotfiles, tmux, VLC, and hook |
 | `omarchup update` | Runs `omarchy update`, followed by `omarchup sync` |

@@ -28,6 +28,8 @@ source "${SCRIPT_DIR}/lib/packages.sh"
 source "${SCRIPT_DIR}/lib/dotfiles.sh"
 # shellcheck source=../lib/tmux.sh
 source "${SCRIPT_DIR}/lib/tmux.sh"
+# shellcheck source=../lib/vlc.sh
+source "${SCRIPT_DIR}/lib/vlc.sh"
 # shellcheck source=../lib/hook.sh
 source "${SCRIPT_DIR}/lib/hook.sh"
 
@@ -36,10 +38,11 @@ show_help() {
   echo -e "${CLR_BOLD}Usage:${CLR_RESET}"
   echo -e "  omarchup [command] [options]\n"
   echo -e "${CLR_BOLD}Commands:${CLR_RESET}"
-  echo -e "  ${CLR_GREEN}sync${CLR_RESET} [default]     Install packages, sync dotfiles, and configure tmux"
+  echo -e "  ${CLR_GREEN}sync${CLR_RESET} [default]     Install packages, sync dotfiles, configure tmux & VLC"
   echo -e "  ${CLR_GREEN}packages${CLR_RESET} [action]  Manage packages (actions: sync, status)"
   echo -e "  ${CLR_GREEN}dotfiles${CLR_RESET} [action]  Manage dotfiles (actions: sync, status, --force)"
   echo -e "  ${CLR_GREEN}tmux${CLR_RESET} [action]      Manage Omarchy tmux configuration (actions: sync, status)"
+  echo -e "  ${CLR_GREEN}vlc${CLR_RESET} [action]       Manage VLC UPnP configuration & firewall status"
   echo -e "  ${CLR_GREEN}hook${CLR_RESET} [action]      Manage Omarchy update hook (actions: install, remove, status)"
   echo -e "  ${CLR_GREEN}status${CLR_RESET}             Display overall system status"
   echo -e "  ${CLR_GREEN}update${CLR_RESET}             Run full system 'omarchy update' followed by omarchup sync"
@@ -48,7 +51,7 @@ show_help() {
   echo -e "  ${CLR_CYAN}-q, --quiet${CLR_RESET}        Suppress logo and decorative banners\n"
   echo -e "${CLR_BOLD}Examples:${CLR_RESET}"
   echo -e "  omarchup                   # Runs complete sync"
-  echo -e "  omarchup tmux sync         # Re-applies vim navigation to Omarchy tmux"
+  echo -e "  omarchup vlc sync          # Configures UPnP discovery for VLC"
   echo -e "  omarchup hook install      # Register omarchup to run during 'omarchy update'"
 }
 
@@ -57,6 +60,7 @@ cmd_sync() {
   sync_packages
   sync_dotfiles false
   sync_tmux
+  sync_vlc
   echo
   log_success "Omarchup synchronization complete!"
 }
@@ -66,6 +70,7 @@ cmd_status() {
   status_packages
   status_dotfiles
   status_tmux
+  status_vlc
   status_hook
 }
 
@@ -131,6 +136,24 @@ cmd_tmux() {
   esac
 }
 
+cmd_vlc() {
+  local sub="${1:-sync}"
+  case "$sub" in
+    sync)
+      print_logo
+      sync_vlc
+      ;;
+    status)
+      status_vlc
+      ;;
+    *)
+      log_error "Unknown vlc action: $sub"
+      echo "Valid actions: sync, status"
+      exit 1
+      ;;
+  esac
+}
+
 cmd_hook() {
   local sub="${1:-status}"
   case "$sub" in
@@ -160,6 +183,7 @@ cmd_update() {
   sync_packages
   sync_dotfiles false
   sync_tmux
+  sync_vlc
   log_success "System and Omarchup update finished!"
 }
 
@@ -191,6 +215,9 @@ main() {
       ;;
     tmux)
       cmd_tmux "${rest_args[@]}"
+      ;;
+    vlc)
+      cmd_vlc "${rest_args[@]}"
       ;;
     hook)
       cmd_hook "${rest_args[@]}"
