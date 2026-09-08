@@ -1,8 +1,8 @@
 # Omarchup (omarchyup)
 
-Personal add-on layer for **[Omarchy OS](https://omarchy.org/)** managing solely personal dotfiles (`tmux`, `editorconfig`) and apps (`1password`, `vlc`, and `vlc-plugin-upnp`).
+Personal add-on layer for **[Omarchy OS](https://omarchy.org/)** managing solely personal dotfiles (`editorconfig`) and apps (`1password`, `vlc`, and `vlc-plugin-upnp`).
 
-Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, prompt, audio, Bluetooth, and core system utilities) is completely managed and comprehended by Omarchy OS.
+Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, tmux, prompt, audio, Bluetooth, and core system utilities) is completely managed and comprehended by Omarchy OS.
 
 ---
 
@@ -14,9 +14,9 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
    - `vlc-plugin-upnp`
 2. **Personal Dotfiles ([config/dotfiles.conf](config/dotfiles.conf))**:
    - Safe dotfiles modules from `emoriarty/dotfiles`:
-     - `tmux` (`~/.tmux.conf`)
      - `editorconfig` (`~/.editorconfig`)
    - **Excluded / Conflicting Modules**:
+     - `tmux` (Omarchy manages tmux directly in `~/.config/tmux/tmux.conf`)
      - `nvim` (Omarchy provides its own tuned LazyVim setup in `~/.config/nvim/`)
      - `kitty` / `alacritty` (Omarchy manages terminal themes dynamically)
      - `starship` (Omarchy provides its own prompt defaults)
@@ -32,7 +32,7 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 │   └── omarchup            # Main CLI runner
 ├── config/
 │   ├── packages.conf       # 1password, vlc, vlc-plugin-upnp
-│   └── dotfiles.conf       # emoriarty/dotfiles repo & module definitions (tmux, editorconfig)
+│   └── dotfiles.conf       # emoriarty/dotfiles repo & module definitions (editorconfig)
 ├── lib/
 │   ├── ui.sh               # Styling, banners, and logging
 │   ├── packages.sh         # Package synchronization module
@@ -70,9 +70,9 @@ omarchup hook install
 
 | Command | Description |
 | :--- | :--- |
-| `omarchup` or `omarchup sync` | Synchronize 1password, vlc, vlc-plugin-upnp, tmux, and editorconfig |
+| `omarchup` or `omarchup sync` | Synchronize 1password, vlc, vlc-plugin-upnp, and editorconfig |
 | `omarchup packages [sync\|status]` | Check status or install 1password, vlc, and vlc-plugin-upnp |
-| `omarchup dotfiles [sync\|status]` | Clone/pull dotfiles and stow tmux and editorconfig |
+| `omarchup dotfiles [sync\|status]` | Clone/pull dotfiles and stow editorconfig |
 | `omarchup hook [install\|remove\|status]` | Manage Omarchy post-update hook integration |
 | `omarchup status` | Display overview of packages, dotfiles, and hook |
 | `omarchup update` | Runs `omarchy update`, followed by `omarchup sync` |
