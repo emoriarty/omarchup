@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Omarchup Post-Update Hook for Omarchy OS
+# ==============================================================================
+# Automatically executed by `omarchy update` during the post-update phase.
+# Synchronizes personal packages and safe dotfiles after system packages and
+# migrations have completed.
+# ==============================================================================
+
+set -e
+
+OMARCHUP_BIN="${HOME}/Work/omarchup/bin/omarchup"
+if [[ ! -x "$OMARCHUP_BIN" ]] && command -v omarchup &>/dev/null; then
+  OMARCHUP_BIN=$(command -v omarchup)
+fi
+
+if [[ -x "$OMARCHUP_BIN" ]]; then
+  echo -e "\033[34m==>\033[0m \033[1mRunning Omarchup Post-Update Sync\033[0m"
+  "$OMARCHUP_BIN" sync || {
+    echo -e "\033[33m[omarchup hook] Notice: Omarchup completed with warnings.\033[0m" >&2
+  }
+fi

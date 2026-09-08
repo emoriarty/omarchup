@@ -1,0 +1,175 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Omarchup - Personal Add-on & Dotfiles Layer for Omarchy OS
+# ==============================================================================
+
+set -euo pipefail
+
+# Resolve symlinks to find repository root directory
+SOURCE="${BASH_SOURCE[0]}"
+while [[ -h "$SOURCE" ]]; do
+  DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+SCRIPT_DIR="$( cd -P "$BIN_DIR/.." >/dev/null 2>&1 && pwd )"
+
+# Source configurations and modules
+# shellcheck source=../config/packages.conf
+source "${SCRIPT_DIR}/config/packages.conf"
+# shellcheck source=../config/dotfiles.conf
+source "${SCRIPT_DIR}/config/dotfiles.conf"
+# shellcheck source=../lib/colors.sh
+source "${SCRIPT_DIR}/lib/colors.sh"
+# shellcheck source=../lib/packages.sh
+source "${SCRIPT_DIR}/lib/packages.sh"
+# shellcheck source=../lib/dotfiles.sh
+source "${SCRIPT_DIR}/lib/dotfiles.sh"
+# shellcheck source=../lib/hook.sh
+source "${SCRIPT_DIR}/lib/hook.sh"
+
+show_help() {
+  print_logo
+  echo -e "${CLR_BOLD}Usage:${CLR_RESET}"
+  echo -e "  omarchup [command] [options]\n"
+  echo -e "${CLR_BOLD}Commands:${CLR_RESET}"
+  echo -e "  ${CLR_GREEN}sync${CLR_RESET} [default]     Install personal packages and sync safe dotfiles"
+  echo -e "  ${CLR_GREEN}packages${CLR_RESET} [action]  Manage packages (actions: sync, status)"
+  echo -e "  ${CLR_GREEN}dotfiles${CLR_RESET} [action]  Manage dotfiles (actions: sync, status, --force)"
+  echo -e "  ${CLR_GREEN}hook${CLR_RESET} [action]      Manage Omarchy update hook (actions: install, remove, status)"
+  echo -e "  ${CLR_GREEN}status${CLR_RESET}             Display overall system status for packages, dotfiles, & hook"
+  echo -e "  ${CLR_GREEN}update${CLR_RESET}             Run full system 'omarchy update' followed by omarchup sync"
+  echo -e "  ${CLR_GREEN}help${CLR_RESET}               Show this help message\n"
+  echo -e "${CLR_BOLD}Examples:${CLR_RESET}"
+  echo -e "  omarchup                   # Syncs packages and dotfiles"
+  echo -e "  omarchup packages status   # Check which configured packages are installed"
+  echo -e "  omarchup dotfiles --force  # Force-stow dotfiles adopting conflicts"
+  echo -e "  omarchup hook install      # Register omarchup to run during 'omarchy update'"
+}
+
+cmd_sync() {
+  print_logo
+  sync_packages
+  sync_dotfiles false
+  echo
+  log_success "Omarchup synchronization complete!"
+}
+
+cmd_status() {
+  print_logo
+  status_packages
+  status_dotfiles
+  status_hook
+}
+
+cmd_packages() {
+  local sub="${1:-sync}"
+  case "$sub" in
+    sync)
+      print_logo
+      sync_packages
+      ;;
+    status)
+      status_packages
+      ;;
+    *)
+      log_error "Unknown packages action: $sub"
+      echo "Valid actions: sync, status"
+      exit 1
+      ;;
+  esac
+}
+
+cmd_dotfiles() {
+  local sub="${1:-sync}"
+  local force=false
+
+  for arg in "$@"; do
+    if [[ "$arg" == "--force" || "$arg" == "-f" ]]; then
+      force=true
+    fi
+  done
+
+  case "$sub" in
+    sync|--force|-f)
+      print_logo
+      sync_dotfiles "$force"
+      ;;
+    status)
+      status_dotfiles
+      ;;
+    *)
+      log_error "Unknown dotfiles action: $sub"
+      echo "Valid actions: sync, status, --force"
+      exit 1
+      ;;
+  esac
+}
+
+cmd_hook() {
+  local sub="${1:-status}"
+  case "$sub" in
+    install)
+      install_hook
+      ;;
+    remove)
+      remove_hook
+      ;;
+    status)
+      status_hook
+      ;;
+    *)
+      log_error "Unknown hook action: $sub"
+      echo "Valid actions: install, remove, status"
+      exit 1
+      ;;
+  esac
+}
+
+cmd_update() {
+  print_logo
+  log_header "Running System Update via Omarchy"
+  omarchy update
+  echo
+  log_header "Running Post-Update Omarchup Layer"
+  sync_packages
+  sync_dotfiles false
+  log_success "System and Omarchup update finished!"
+}
+
+main() {
+  local cmd="${1:-sync}"
+  shift || true
+
+  case "$cmd" in
+    sync)
+      cmd_sync "$@"
+      ;;
+    packages|pkg)
+      cmd_packages "$@"
+      ;;
+    dotfiles|dot)
+      cmd_dotfiles "$@"
+      ;;
+    hook)
+      cmd_hook "$@"
+      ;;
+    status)
+      cmd_status
+      ;;
+    update|up)
+      cmd_update "$@"
+      ;;
+    help|--help|-h)
+      show_help
+      ;;
+    *)
+      log_error "Unknown command: $cmd"
+      echo "Run 'omarchup help' for usage instructions."
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"
