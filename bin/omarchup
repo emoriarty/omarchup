@@ -26,6 +26,8 @@ source "${SCRIPT_DIR}/lib/ui.sh"
 source "${SCRIPT_DIR}/lib/packages.sh"
 # shellcheck source=../lib/dotfiles.sh
 source "${SCRIPT_DIR}/lib/dotfiles.sh"
+# shellcheck source=../lib/tmux.sh
+source "${SCRIPT_DIR}/lib/tmux.sh"
 # shellcheck source=../lib/hook.sh
 source "${SCRIPT_DIR}/lib/hook.sh"
 
@@ -34,19 +36,19 @@ show_help() {
   echo -e "${CLR_BOLD}Usage:${CLR_RESET}"
   echo -e "  omarchup [command] [options]\n"
   echo -e "${CLR_BOLD}Commands:${CLR_RESET}"
-  echo -e "  ${CLR_GREEN}sync${CLR_RESET} [default]     Install personal packages and sync safe dotfiles"
+  echo -e "  ${CLR_GREEN}sync${CLR_RESET} [default]     Install packages, sync dotfiles, and configure tmux"
   echo -e "  ${CLR_GREEN}packages${CLR_RESET} [action]  Manage packages (actions: sync, status)"
   echo -e "  ${CLR_GREEN}dotfiles${CLR_RESET} [action]  Manage dotfiles (actions: sync, status, --force)"
+  echo -e "  ${CLR_GREEN}tmux${CLR_RESET} [action]      Manage Omarchy tmux configuration (actions: sync, status)"
   echo -e "  ${CLR_GREEN}hook${CLR_RESET} [action]      Manage Omarchy update hook (actions: install, remove, status)"
-  echo -e "  ${CLR_GREEN}status${CLR_RESET}             Display overall system status for packages, dotfiles, & hook"
+  echo -e "  ${CLR_GREEN}status${CLR_RESET}             Display overall system status"
   echo -e "  ${CLR_GREEN}update${CLR_RESET}             Run full system 'omarchy update' followed by omarchup sync"
   echo -e "  ${CLR_GREEN}help${CLR_RESET}               Show this help message\n"
   echo -e "${CLR_BOLD}Global Options:${CLR_RESET}"
   echo -e "  ${CLR_CYAN}-q, --quiet${CLR_RESET}        Suppress logo and decorative banners\n"
   echo -e "${CLR_BOLD}Examples:${CLR_RESET}"
-  echo -e "  omarchup                   # Syncs packages and dotfiles"
-  echo -e "  omarchup packages status   # Check which configured packages are installed"
-  echo -e "  omarchup dotfiles --force  # Force-stow dotfiles adopting conflicts"
+  echo -e "  omarchup                   # Runs complete sync"
+  echo -e "  omarchup tmux sync         # Re-applies vim navigation to Omarchy tmux"
   echo -e "  omarchup hook install      # Register omarchup to run during 'omarchy update'"
 }
 
@@ -54,6 +56,7 @@ cmd_sync() {
   print_logo
   sync_packages
   sync_dotfiles false
+  sync_tmux
   echo
   log_success "Omarchup synchronization complete!"
 }
@@ -62,6 +65,7 @@ cmd_status() {
   print_logo
   status_packages
   status_dotfiles
+  status_tmux
   status_hook
 }
 
@@ -109,6 +113,24 @@ cmd_dotfiles() {
   esac
 }
 
+cmd_tmux() {
+  local sub="${1:-sync}"
+  case "$sub" in
+    sync)
+      print_logo
+      sync_tmux
+      ;;
+    status)
+      status_tmux
+      ;;
+    *)
+      log_error "Unknown tmux action: $sub"
+      echo "Valid actions: sync, status"
+      exit 1
+      ;;
+  esac
+}
+
 cmd_hook() {
   local sub="${1:-status}"
   case "$sub" in
@@ -137,6 +159,7 @@ cmd_update() {
   log_header "Running Post-Update Omarchup Layer"
   sync_packages
   sync_dotfiles false
+  sync_tmux
   log_success "System and Omarchup update finished!"
 }
 
@@ -165,6 +188,9 @@ main() {
       ;;
     dotfiles|dot)
       cmd_dotfiles "${rest_args[@]}"
+      ;;
+    tmux)
+      cmd_tmux "${rest_args[@]}"
       ;;
     hook)
       cmd_hook "${rest_args[@]}"

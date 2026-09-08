@@ -1,8 +1,8 @@
 # Omarchup (omarchyup)
 
-Personal add-on layer for **[Omarchy OS](https://omarchy.org/)** managing solely personal dotfiles (`editorconfig`) and apps (`1password`, `vlc`, and `vlc-plugin-upnp`).
+Personal add-on layer for **[Omarchy OS](https://omarchy.org/)** managing personal packages (`1password`, `vlc`, and `vlc-plugin-upnp`), dotfiles (`editorconfig`), and Omarchy configuration enhancements (such as vim-style tmux navigation).
 
-Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, tmux, prompt, audio, Bluetooth, and core system utilities) is completely managed and comprehended by Omarchy OS.
+Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, prompt, audio, Bluetooth, and core system utilities) is completely managed and comprehended by Omarchy OS.
 
 ---
 
@@ -16,11 +16,15 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
    - Safe dotfiles modules from `emoriarty/dotfiles`:
      - `editorconfig` (`~/.editorconfig`)
    - **Excluded / Conflicting Modules**:
-     - `tmux` (Omarchy manages tmux directly in `~/.config/tmux/tmux.conf`)
+     - `tmux` (managed via `omarchup tmux` directly on Omarchy's config)
      - `nvim` (Omarchy provides its own tuned LazyVim setup in `~/.config/nvim/`)
      - `kitty` / `alacritty` (Omarchy manages terminal themes dynamically)
      - `starship` (Omarchy provides its own prompt defaults)
      - `hyprland` / `waybar` / `wofi` / `bash_arch` (managed by Omarchy core)
+3. **Omarchy Configuration Tuning ([lib/tmux.sh](lib/tmux.sh))**:
+   - Idempotently applies vim-style pane navigation (`PREFIX + h/j/k/l`) to `~/.config/tmux/tmux.conf`.
+   - Remaps vertical split to `PREFIX + s` and kill window to `PREFIX + X`.
+   - Preserves all Omarchy system theming, mouse support, and terminal features.
 
 ---
 
@@ -37,6 +41,7 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 │   ├── ui.sh               # Styling, banners, and logging
 │   ├── packages.sh         # Package synchronization module
 │   ├── dotfiles.sh         # GNU Stow manager with Omarchy safety guards
+│   ├── tmux.sh             # Omarchy tmux configuration enhancer
 │   └── hook.sh             # Omarchy hook manager (post-update.d)
 ├── hooks/
 │   └── 50-omarchup.hook    # Hook for ~/.config/omarchy/hooks/post-update.d/
@@ -53,13 +58,13 @@ Everything else (Hyprland, status bar, notifications, terminal themes, LazyVim, 
 omarchup status
 ```
 
-### 2. Synchronize (Packages & Dotfiles)
+### 2. Synchronize (Packages, Dotfiles, and Tmux)
 ```bash
 omarchup sync
 ```
 
 ### 3. (Optional) Register with `omarchy update`
-To have your personal packages and dotfiles re-verified after every `omarchy update`:
+To have your personal packages, dotfiles, and tmux configurations re-verified after every `omarchy update`:
 ```bash
 omarchup hook install
 ```
@@ -70,9 +75,10 @@ omarchup hook install
 
 | Command | Description |
 | :--- | :--- |
-| `omarchup` or `omarchup sync` | Synchronize 1password, vlc, vlc-plugin-upnp, and editorconfig |
+| `omarchup` or `omarchup sync` | Synchronize packages, editorconfig, and tmux config |
 | `omarchup packages [sync\|status]` | Check status or install 1password, vlc, and vlc-plugin-upnp |
 | `omarchup dotfiles [sync\|status]` | Clone/pull dotfiles and stow editorconfig |
+| `omarchup tmux [sync\|status]` | Check status or apply vim navigation to Omarchy tmux |
 | `omarchup hook [install\|remove\|status]` | Manage Omarchy post-update hook integration |
-| `omarchup status` | Display overview of packages, dotfiles, and hook |
+| `omarchup status` | Display overview of packages, dotfiles, tmux, and hook |
 | `omarchup update` | Runs `omarchy update`, followed by `omarchup sync` |
