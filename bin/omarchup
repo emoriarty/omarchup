@@ -20,6 +20,8 @@ SCRIPT_DIR="$( cd -P "$BIN_DIR/.." >/dev/null 2>&1 && pwd )"
 source "${SCRIPT_DIR}/config/packages.conf"
 # shellcheck source=../config/dotfiles.conf
 source "${SCRIPT_DIR}/config/dotfiles.conf"
+# shellcheck source=../config/aliases.conf
+source "${SCRIPT_DIR}/config/aliases.conf"
 # shellcheck source=../lib/ui.sh
 source "${SCRIPT_DIR}/lib/ui.sh"
 # shellcheck source=../lib/packages.sh
@@ -30,17 +32,20 @@ source "${SCRIPT_DIR}/lib/dotfiles.sh"
 source "${SCRIPT_DIR}/lib/tmux.sh"
 # shellcheck source=../lib/vlc.sh
 source "${SCRIPT_DIR}/lib/vlc.sh"
+# shellcheck source=../lib/aliases.sh
+source "${SCRIPT_DIR}/lib/aliases.sh"
 
 show_help() {
   print_logo
   echo -e "${CLR_BOLD}Usage:${CLR_RESET}"
   echo -e "  omarchup [command] [options]\n"
   echo -e "${CLR_BOLD}Commands:${CLR_RESET}"
-  echo -e "  ${CLR_GREEN}sync${CLR_RESET} [default]     Install packages, sync dotfiles, configure tmux & VLC"
+  echo -e "  ${CLR_GREEN}sync${CLR_RESET} [default]     Install packages, sync dotfiles, configure tmux, VLC & aliases"
   echo -e "  ${CLR_GREEN}packages${CLR_RESET} [action]  Manage packages (actions: sync, status)"
   echo -e "  ${CLR_GREEN}dotfiles${CLR_RESET} [action]  Manage dotfiles (actions: sync, status, --force)"
   echo -e "  ${CLR_GREEN}tmux${CLR_RESET} [action]      Manage Omarchy tmux configuration (actions: sync, status)"
   echo -e "  ${CLR_GREEN}vlc${CLR_RESET} [action]       Manage VLC UPnP configuration & status"
+  echo -e "  ${CLR_GREEN}aliases${CLR_RESET} [action]   Manage personal shell aliases (actions: sync, status)"
   echo -e "  ${CLR_GREEN}status${CLR_RESET}             Display overall system status"
   echo -e "  ${CLR_GREEN}help${CLR_RESET}               Show this help message\n"
   echo -e "${CLR_BOLD}Global Options:${CLR_RESET}"
@@ -48,6 +53,7 @@ show_help() {
   echo -e "${CLR_BOLD}Examples:${CLR_RESET}"
   echo -e "  omarchup                   # Runs complete sync"
   echo -e "  omarchup status            # Inspect current status of all managed parts"
+  echo -e "  omarchup aliases sync      # Synchronizes personal shell aliases"
   echo -e "  omarchup vlc sync          # Configures UPnP discovery for VLC"
 }
 
@@ -57,6 +63,7 @@ cmd_sync() {
   sync_dotfiles false
   sync_tmux
   sync_vlc
+  sync_aliases
   echo
   log_success "Omarchup synchronization complete!"
 }
@@ -67,6 +74,7 @@ cmd_status() {
   status_dotfiles
   status_tmux
   status_vlc
+  status_aliases
 }
 
 cmd_packages() {
@@ -149,6 +157,24 @@ cmd_vlc() {
   esac
 }
 
+cmd_aliases() {
+  local sub="${1:-sync}"
+  case "$sub" in
+    sync)
+      print_logo
+      sync_aliases
+      ;;
+    status)
+      status_aliases
+      ;;
+    *)
+      log_error "Unknown aliases action: $sub"
+      echo "Valid actions: sync, status"
+      exit 1
+      ;;
+  esac
+}
+
 main() {
   local filtered_args=()
   for arg in "$@"; do
@@ -180,6 +206,9 @@ main() {
       ;;
     vlc)
       cmd_vlc "${rest_args[@]}"
+      ;;
+    aliases|alias)
+      cmd_aliases "${rest_args[@]}"
       ;;
     status)
       cmd_status
