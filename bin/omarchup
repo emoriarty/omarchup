@@ -34,18 +34,21 @@ source "${SCRIPT_DIR}/lib/tmux.sh"
 source "${SCRIPT_DIR}/lib/vlc.sh"
 # shellcheck source=../lib/aliases.sh
 source "${SCRIPT_DIR}/lib/aliases.sh"
+# shellcheck source=../lib/hyprland.sh
+source "${SCRIPT_DIR}/lib/hyprland.sh"
 
 show_help() {
   print_logo
   echo -e "${CLR_BOLD}Usage:${CLR_RESET}"
   echo -e "  omarchup [command] [options]\n"
   echo -e "${CLR_BOLD}Commands:${CLR_RESET}"
-  echo -e "  ${CLR_GREEN}sync${CLR_RESET} [default]     Install packages, sync dotfiles, configure tmux, VLC & aliases"
+  echo -e "  ${CLR_GREEN}sync${CLR_RESET} [default]     Install packages, sync dotfiles, configure tmux, VLC, aliases & Hyprland"
   echo -e "  ${CLR_GREEN}packages${CLR_RESET} [action]  Manage packages (actions: sync, status)"
   echo -e "  ${CLR_GREEN}dotfiles${CLR_RESET} [action]  Manage dotfiles (actions: sync, status, --force)"
   echo -e "  ${CLR_GREEN}tmux${CLR_RESET} [action]      Manage Omarchy tmux configuration (actions: sync, status)"
   echo -e "  ${CLR_GREEN}vlc${CLR_RESET} [action]       Manage VLC UPnP configuration & status"
   echo -e "  ${CLR_GREEN}aliases${CLR_RESET} [action]   Manage personal shell aliases (actions: sync, status)"
+  echo -e "  ${CLR_GREEN}hyprland${CLR_RESET} [action]  Manage Hyprland configuration (actions: sync, status)"
   echo -e "  ${CLR_GREEN}status${CLR_RESET}             Display overall system status"
   echo -e "  ${CLR_GREEN}help${CLR_RESET}               Show this help message\n"
   echo -e "${CLR_BOLD}Global Options:${CLR_RESET}"
@@ -54,6 +57,7 @@ show_help() {
   echo -e "  omarchup                   # Runs complete sync"
   echo -e "  omarchup status            # Inspect current status of all managed parts"
   echo -e "  omarchup aliases sync      # Synchronizes personal shell aliases"
+  echo -e "  omarchup hyprland sync     # Configures Caps Lock to Ctrl remap in Hyprland"
   echo -e "  omarchup vlc sync          # Configures UPnP discovery for VLC"
 }
 
@@ -64,6 +68,7 @@ cmd_sync() {
   sync_tmux
   sync_vlc
   sync_aliases
+  sync_hyprland
   echo
   log_success "Omarchup synchronization complete!"
 }
@@ -75,6 +80,7 @@ cmd_status() {
   status_tmux
   status_vlc
   status_aliases
+  status_hyprland
 }
 
 cmd_packages() {
@@ -175,6 +181,24 @@ cmd_aliases() {
   esac
 }
 
+cmd_hyprland() {
+  local sub="${1:-sync}"
+  case "$sub" in
+    sync)
+      print_logo
+      sync_hyprland
+      ;;
+    status)
+      status_hyprland
+      ;;
+    *)
+      log_error "Unknown hyprland action: $sub"
+      echo "Valid actions: sync, status"
+      exit 1
+      ;;
+  esac
+}
+
 main() {
   local filtered_args=()
   for arg in "$@"; do
@@ -209,6 +233,9 @@ main() {
       ;;
     aliases|alias)
       cmd_aliases "${rest_args[@]}"
+      ;;
+    hyprland|hypr|keyboard|input)
+      cmd_hyprland "${rest_args[@]}"
       ;;
     status)
       cmd_status

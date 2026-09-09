@@ -8,10 +8,10 @@
 
 ALIASES_FILE="${HOME}/.bash_aliases"
 BASHRC_FILE="${HOME}/.bashrc"
-MARKER="# Personal aliases (managed by omarchup)"
+ALIASES_MARKER="# Personal aliases (managed by omarchup)"
 
 is_bashrc_aliases_configured() {
-  [[ -f "$BASHRC_FILE" ]] && (grep -qF "$MARKER" "$BASHRC_FILE" || grep -qE "(source|\.)\s+.*\.bash_aliases" "$BASHRC_FILE")
+  [[ -f "$BASHRC_FILE" ]] && (grep -qF -e "$ALIASES_MARKER" "$BASHRC_FILE" || grep -qE "(source|\.)\s+.*\.bash_aliases" "$BASHRC_FILE")
 }
 
 is_aliases_file_synced() {

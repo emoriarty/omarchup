@@ -23,6 +23,9 @@ Personal on-demand setup and synchronization layer for **[Omarchy OS](https://om
 5. **VLC UPnP Service Discovery ([lib/vlc.sh](lib/vlc.sh))**:
    - Enables UPnP service discovery in `~/.config/vlc/vlcrc`.
    - Checks and verifies UFW firewall rules for UPnP/SSDP traffic (UDP port 1900 / local subnet).
+6. **Hyprland Input Tuning ([lib/hyprland.sh](lib/hyprland.sh))**:
+   - Idempotently rebinds Caps Lock to Ctrl (`ctrl:nocaps`) in `~/.config/hypr/input.lua`.
+   - Triggers `hyprctl reload` and validates config integrity across updates.
 
 ---
 
@@ -51,11 +54,12 @@ omarchup sync
 
 | Command | Description |
 | :--- | :--- |
-| `omarchup` or `omarchup sync` | Synchronize packages, editorconfig, aliases, tmux, and VLC |
+| `omarchup` or `omarchup sync` | Synchronize packages, editorconfig, aliases, tmux, VLC, and Hyprland |
 | `omarchup packages [sync\|status]` | Check status or install 1password, vlc, and vlc-plugin-upnp |
 | `omarchup dotfiles [sync\|status]` | Clone/pull dotfiles and stow editorconfig |
 | `omarchup aliases [sync\|status]` | Check status or synchronize personal shell aliases |
 | `omarchup tmux [sync\|status]` | Check status or apply vim navigation to Omarchy tmux |
 | `omarchup vlc [sync\|status]` | Check status or configure UPnP discovery for VLC |
-| `omarchup status` | Display overview of packages, dotfiles, aliases, tmux, and VLC |
+| `omarchup hyprland [sync\|status]` | Check status or remap Caps Lock to Ctrl in Hyprland |
+| `omarchup status` | Display overview of packages, dotfiles, aliases, tmux, VLC, and Hyprland |
 | `omarchup help` | Show help and usage instructions |

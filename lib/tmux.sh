@@ -8,10 +8,10 @@
 
 TMUX_CONF="${HOME}/.config/tmux/tmux.conf"
 OMARCHY_DEFAULT_TMUX="/usr/share/omarchy/config/tmux/tmux.conf"
-MARKER="# Vim-like pane navigation (managed by omarchup)"
+TMUX_MARKER="# Vim-like pane navigation (managed by omarchup)"
 
 is_tmux_vim_configured() {
-  [[ -f "$TMUX_CONF" ]] && grep -qF "$MARKER" "$TMUX_CONF"
+  [[ -f "$TMUX_CONF" ]] && grep -qF "$TMUX_MARKER" "$TMUX_CONF"
 }
 
 apply_tmux_vim_config() {
@@ -36,7 +36,7 @@ VIM_EOF
 
   # Check if insertion point exists
   if grep -qF 'bind -N "Kill pane" x kill-pane' "$target"; then
-    awk -v marker="$MARKER" -v block="$vim_block" '
+    awk -v marker="$TMUX_MARKER" -v block="$vim_block" '
       { print }
       /bind -N "Kill pane" x kill-pane/ {
         print ""
